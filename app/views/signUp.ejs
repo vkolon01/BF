@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="eng">
+<head>
+    <% include ./template/head.ejs %>
+</head>
+<body id="<% pageID %>">
+
+<div id="wrapper">
+    <header>
+        <% include ./template/header.ejs%>
+    </header>
+    <div id="mainContent">
+        <form class="createAccount">
+            First name:<br>
+            <input id="formFirstName" type="text" maxlength=50, autofocus=true name="firstName"> <p id="err" class="error_feedback_firstName"></p>
+            Last name:<br>
+            <input id="formLastName" type="text" maxlength=50, name="lastName"> <p id="err" class="error_feedback_lastName"></p>
+            Username:<br>
+            <input id="formUsername" type="text"  name="username"> <p id="err" class="error_feedback_username"></p>
+            Email address:<br>
+            <input id="formEmail" type="email" name="emailAddress"><br> <p id="err" class="error_feedback_email"></p>
+            Password:<br>
+            <input id="formPassword" type="password" name="password"><br> <p id="err" class="error_feedback_password"></p>
+            Confirm password:<br>
+            <input id="formPasswordConfirm" type="password" name="confirmpassword"><br><br>
+
+            <button type="submit"> submit</button> <br><br>
+        </form>
+    </div>
+</div>
+<%include ./template/scripts.ejs%>
+</body>
+</html>

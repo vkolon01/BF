@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="eng">
+<head>
+    <% include ./template/head.ejs %>
+</head>
+<body>
+<div id="wrapper">
+    <header>
+        <% include ./template/header.ejs%>
+    </header>
+
+    <div id="indexPage">
+        <form id="submitionForm" action="" method="post">
+            Title:<br>
+            <input type="text" name="title"><br>
+            Autor:<br>
+            <input type="text" name="autor"><br><br>
+            <input type="submit" value="submit">
+        </form>
+    </div>
+    <footer>
+        <div id="footer">
+
+        </div>
+    </footer>
+</div>
+<!--<script>
+    document.getElementById("submitionForm").addEventListener('submit', submitBook);
+
+    function submitBook(){
+
+        event.preventDefault();
+        var form = document.getElementById("submitionForm");
+        var title = form.elements[0].value;
+        var autor = form.elements[1].value;
+        //sending the fields to mongoosedb
+        //createBook(title,autor);
+
+        console.log("The title is " + title + " and the autor is "+ autor);
+    }
+    var createForm = document.getElementById("submitionForm");
+    var fields = createForm.getElementsByTagName("input");
+    console.log(fields.length);
+
+</script>-->
+<script type="text/javascript" src="logic/jquery-3.1.1.js"></script>
+<script type="text/javascript" src="logic/dataHandler.js"></script>
+<script src="/javascripts/submit.js"></script>
+</body>
+</html>

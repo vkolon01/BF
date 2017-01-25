@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="eng">
+<head>
+  <% include ./template/head.ejs %>
+</head>
+<body id="<% pageID %>">
+
+<div id="wrapper">
+  <header>
+  <% include ./template/header.ejs%>
+  </header>
+  <div><% include ./content/returnHome.ejs  %></div>
+  <div id="mainContent">
+  <% include content/mainContent.ejs %>
+    <ul id="browse">
+    <% featureBooks.forEach(function(book){ %>
+      <li><a href="<%='books/'+book._id%>" title="goToBook">
+        <img src=<% if(book.cover=="null"){%>"/images/null.jpg"<%}%>>
+        <h2>Title: <%= book.title %></h2>
+        <h3>Autor:  <%= book.autor%></h3>
+        <p>Summary <br> <%= book.summary%></p>
+        </a></li>
+   <% });%>
+    </ul>
+  </div>
+</div>
+<%include ./template/scripts.ejs%>
+</body>
+</html>

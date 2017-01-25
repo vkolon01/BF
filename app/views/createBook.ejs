@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="eng">
+<head>
+  <% include ./template/head.ejs %>
+</head>
+<body id="<% pageID %>">
+
+<div id="wrapper">
+  <header>
+  <% include ./template/header.ejs%>
+  </header>
+
+  <div id="mainContent">
+
+    <form class="submissionForm">
+      Title:<br>
+      <input id="formTitle" type="text"  maxlength=50, autofocus=true name="title"> <p id="err" class="error_feedback_title"></p>
+      Autor:<br>
+      <input id="formAutor" type="text"  maxlength=50 name="autor"> <p id="err" class="error_feedback_autor"></p>
+      Summary: (max 300 characters)<br>
+      <textarea id="formSummary" type="text" maxlength=300 name="autor" class="summary"></textarea><br><br>
+
+      <button type="submit"> submit</button>
+    </form>
+  </div>
+  <footer>
+    <div id="footer">
+
+    </div>
+  </footer>
+</div>
+<%include ./template/scripts.ejs%>
+</body>
+</html>
