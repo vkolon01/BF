@@ -53,37 +53,7 @@ router.post('/newUser', function(req,res){
         });
     });
 });
-router.post('/log_in',function(req,res){
-    var username = req.body.username;
-    var password = req.body.password;
 
-
-    var Users = req.app.get('userData');
-
-    Users.findOne({'username': username},function (err,user){
-        if(err) throw err("Error with the user");
-        if(user !== null){
-            crypt(password).verifyAgainst(user.hash, function(err,verified){
-                if(verified){
-                    router.get('/', function(req,res){
-                        res.render('/',{
-                            pageTitle: 'Log In',
-                            message: 'You have logged in',
-                            pageID: 'logIn'
-                        }) ;
-                        res.redirect('/');
-                    });
-                }else{
-                    console.log("try better next time");
-                }
-            });
-        }else{
-            console.log("No users found");
-        }
-
-    });
-
-});
 
 
 
