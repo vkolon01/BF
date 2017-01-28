@@ -10,16 +10,15 @@
         <% include ./template/header.ejs%>
     </header>
 
-    <div id="mainContent">
+    <div class="mainContent">
         <% include content/mainContent.ejs %>
-        <ul id="browse">
             <img src=<% if(book.cover=="null"){%>"/images/null.jpg"<%}%>>
             <h2>Title: <%= book.title %></h2>
             <h3>Autor:  <%= book.autor%></h3>
-            <p>Summary <br> <%= book.summary%></p>
+            <p>Summary <br> <%= book.summary%></p><br>
 
-            <textarea id="commentInput" type="text", maxlength="100"></textarea>
-        </ul>
+
+        <% include ./content/commentSection.ejs%>
     </div>
 </div>
 <%include ./template/scripts.ejs%>

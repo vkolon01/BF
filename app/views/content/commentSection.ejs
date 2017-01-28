@@ -1,0 +1,22 @@
+<p>Enter your comment below</p>
+
+<form class="commentForm">
+    <p id="err" class="error_feedback"></p>
+    <textarea id="commentInput" type="text" maxlength="100"></textarea>
+    <input type="hidden" id="id" value="<%= book._id %>">
+    <button type="submit">Submit</button>
+</form>
+
+<ul id="comment_section">
+    <%if(book.comments==null){%>
+    <p>Be the first to leave a comment</p>
+    <%}else{
+    book.comments.reverse().forEach(function(comment){
+    %><li id="commentElement">
+        <a href="#" id="username"><%= comment.commentAutor%></a>
+        <h4 id="post_date">Posted at <%= comment.date.getHours()+":"+comment.date.getMinutes()+" on "+comment.date.getDate()+"-"+comment.date.getMonth()+"-"+comment.date.getFullYear()%></h4>
+        <p><%= comment.body %></p>
+    </li> <%
+    });
+    }%>
+</ul>

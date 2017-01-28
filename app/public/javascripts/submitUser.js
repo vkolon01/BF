@@ -49,7 +49,7 @@ $(function(){
         }
 
         if(unsolvedErrors){
-            displayError(errors);s
+            displayError(errors);
         }else{
             $.post('newUser',{
                 firstName: cleanFirstName[1],

@@ -3,6 +3,9 @@
  */
 var express = require('express');
 var router = express.Router();
+var bodyParser = require('body-parser');
+router.use(bodyParser.json());
+router.use(bodyParser.urlencoded({ extended: false }));
 
 router.get('/', function(req,res){
     var info = '';
@@ -48,6 +51,26 @@ router.get('/createBook', function(req,res){
         pageID: 'createBook'
     });
 });
+
+router.post('/books/newComment',function(req,res){
+    var commentData = req.body;
+    console.log("Passed id: ",commentData);
+    req.app.get('bookData').findByIdAndUpdate(
+        commentData.book_id,
+        {$push: {
+            "comments":{
+                commentAutor: commentData.commentAutor,
+                body: commentData.body,
+                date: new Date()
+            }}},
+        {safe: true, upsert: true, new: true},
+        function(err,comment){
+            if(err) console.log("Error while creating a comment instance has occurred")
+        }
+    );
+});
+
+
 
 
 module.exports = router;

@@ -9,6 +9,7 @@ router.use(bodyParser.urlencoded({extended: false}))
 router.post('/newBook', function(req,res){
     var BookModel = req.app.get('bookData');
     var bookData = req.body;
+
     //console.log('The received json data: '+json(sanForm));
 
     var book = new BookModel({
@@ -53,11 +54,5 @@ router.post('/newUser', function(req,res){
         });
     });
 });
-
-
-
-
-router.use(bodyParser.json());
-router.use(bodyParser.urlencoded({ extended: false }));
 
 module.exports = router;
