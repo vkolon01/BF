@@ -11,12 +11,12 @@
     </header>
 
     <div id="mainContent">
-        <% include content/mainContent.ejs %>
+
+            <h2>Full Name: <%=  user.lastName + " " + user.firstName%></h2>
+            <h3>Username:  <%= user.username%></h3>
+        <p> <%= user.firstName %>'s favourite books: </p>
         <ul id="browse">
-            <img src=<% if(book.cover=="null"){%>"/images/null.jpg"<%}%>>
-            <h2>Title: <%= book.title %></h2>
-            <h3>Autor:  <%= book.autor%></h3>
-            <p>Summary <br> <%= book.summary%></p>
+
         </ul>
     </div>
 </div>

@@ -11,13 +11,19 @@
     </header>
 
     <div class="mainContent">
-        <% include content/mainContent.ejs %>
-            <img src=<% if(book.cover=="null"){%>"/images/null.jpg"<%}%>>
-            <h2>Title: <%= book.title %></h2>
-            <h3>Autor:  <%= book.autor%></h3>
-            <p>Summary <br> <%= book.summary%></p><br>
 
-
+        <img src=<% if(book.cover=="null"){%>"/images/null.jpg"<%}%>>
+        <h2>Title: <%= book.title %></h2>
+        <h3>Autor:  <%= book.autor%></h3>
+        <p>Summary <br> <%= book.summary%></p><br>
+        <form action ="/books/fav" method="post">
+            <input type="hidden" name="book_id" value="<%= book._id %>">
+            <%if(fav){%>
+                <button name="fav" value="fav">dislike</button>
+            <%}else{%>
+                <button name="fav" value="fav">like</button>
+            <%}%>
+        </form>
         <% include ./content/commentSection.ejs%>
     </div>
 </div>

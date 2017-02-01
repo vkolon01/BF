@@ -1,4 +1,4 @@
-$(function(){
+/*$(function(){
    $('.logIn').submit(function(event){
        event.preventDefault();
        $.post('log_in',{
@@ -6,4 +6,4 @@ $(function(){
            password : $('#formPassword').val()
        });
    });
-});
+});*/
