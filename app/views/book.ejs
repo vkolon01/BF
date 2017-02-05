@@ -3,7 +3,7 @@
 <head>
     <% include ./template/head.ejs %>
 </head>
-<body id="<% pageID %>">
+<body>
 
 <div id="wrapper">
     <header>
@@ -18,10 +18,14 @@
         <p>Summary <br> <%= book.summary%></p><br>
         <form action ="/books/fav" method="post">
             <input type="hidden" name="book_id" value="<%= book._id %>">
-            <%if(fav){%>
-                <button name="fav" value="fav">dislike</button>
-            <%}else{%>
-                <button name="fav" value="fav">like</button>
+            <%if(loggedIn){
+                if(fav){%>
+                    <button name="fav" value="fav">dislike</button>
+                <%}else{%>
+                    <button name="fav" value="fav">like</button>
+                <%}
+            }else{%>
+                <a href="/login">Please log in to leave a comment</a>
             <%}%>
         </form>
         <% include ./content/commentSection.ejs%>

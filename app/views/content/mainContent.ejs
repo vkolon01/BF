@@ -3,11 +3,13 @@
 </h1>
 <ul id="browse">
     <%if(typeof featureBooks !== 'undefined'){ featureBooks.forEach(function(book){ %>
-    <li><a href="<%='books/'+book._id%>" title="goToBook">
+    <li>
+        <%if(typeof book !=='undefined'){%>
+        <a href="<%='books/'+book._id%>" title="goToBook">
             <img src=<% if(book.cover=="null"){%>"/images/null.jpg"<%}%>>
             <h2>Title: <%= book.title %></h2>
             <h3>Autor:  <%= book.autor%></h3>
             <p>Summary <br> <%= book.summary%></p>
         </a></li>
-    <% });}%>
+    <% }});}%>
 </ul>

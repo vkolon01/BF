@@ -5,7 +5,6 @@ var express = require('express');
 var router = express.Router();
 var crypt = require('password-hash-and-salt'); //https://www.npmjs.com/package/password-hash-and-salt
 
-
 router.get('/signUp',function(req,res){
     res.render('signUp',{
         pageTitle: 'Sign Up',
@@ -24,25 +23,38 @@ router.get('/login', function(req,res){
    res.render('logInPage',{
        pageTitle: 'Log In',
        pageID: 'logIn',
+       userid: req.session.userid,
        loggedIn: req.session.loggedIn,
        username: req.session.username,
-       err: req.session.err
+       notification: req.session.notification
    });
     req.session.err = null;
 });
 
-router.get('/:userid', function(req,res) {
-    var curBook = "";
+router.get('/users/:userid', function(req,res) {
+    //Array to store all the user's favourite books.
+    var likedBooks = [];
+
     req.app.get('userData').findById(req.params.userid, function (err, user) {
         if (err)console.log(err);
-        res.render('user', {
-            user: user,
-            loggedIn: req.session.loggedIn,
-            username: req.session.username,
-            err: req.session.err
+
+            req.app.get('bookData').find({
+                 "_id": { $in: user.favBooks}
+            },function(err,favBooksList){
+                console.log(favBooksList);
+                res.render('user', {
+                    pageTitle: "User's page",
+                    user: user,
+                    likedBooks: favBooksList,
+                    userid: req.session.userid,
+                    loggedIn: req.session.loggedIn,
+                    username: req.session.username,
+                    notification: req.session.notification
+                });
+            });
+
         });
     });
-});
 
 router.post('/loginSubmit',function(req,res){
     var username = req.body.username;
@@ -57,7 +69,6 @@ router.post('/loginSubmit',function(req,res){
                     req.session.loggedIn = true;
                     req.session.username = username;
                     req.session.userid = user._id;
-                    req.session.favBooks = user.favBooks;
                     res.redirect('/');
                 }else{
                     req.session.loggedIn = false;

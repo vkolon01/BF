@@ -23,7 +23,7 @@ router.post('/newBook', function(req,res){
         if(err) {
             console.log('The book is lost in space and time')
         }else{
-            console.log("The book "+ book.title + "has been recorded");
+            res.redirect('/');
         }
     });
 });

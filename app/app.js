@@ -24,7 +24,7 @@ var userSchema = new mongoose.Schema({
     username: String,
     email: String,
     hash: String,
-    favBooks: [{bookid: String,title: String, autor: String}]
+    favBooks: [String]
 });
 var autorSchema = new mongoose.Schema({
     full_name: String,
@@ -39,7 +39,7 @@ var app = express();
 // view engine setup
 app.set('view engine', 'ejs');
 app.set('views','app/views');
-app.set('port',process.env.PORT || 3000);
+app.set('port',process.env.PORT || 9000);
 
 /**
  * Giving the app access to the following data.

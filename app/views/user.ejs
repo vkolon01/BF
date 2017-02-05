@@ -3,22 +3,27 @@
 <head>
     <% include ./template/head.ejs %>
 </head>
-<body id="<% pageID %>">
+<body>
 
 <div id="wrapper">
     <header>
         <% include ./template/header.ejs%>
     </header>
-
     <div id="mainContent">
-
-            <h2>Full Name: <%=  user.lastName + " " + user.firstName%></h2>
-            <h3>Username:  <%= user.username%></h3>
+        <h2>Full Name: <%=  user.lastName + " " + user.firstName%></h2>
+        <h3>Username:  <%= user.username%></h3>
         <p> <%= user.firstName %>'s favourite books: </p>
-        <ul id="browse">
-
-        </ul>
     </div>
+    <ul id="listBrowse">
+        <%if(typeof likedBooks !== 'undefined'){ likedBooks.forEach(function(book){ %>
+
+        <li><a href="<%='/books/'+book._id%>" title="goToBook">
+                <img src=<% if(book.cover=="null"){%>"/images/null.jpg"<%}%>>
+                <h3>Title: <%= book.title %></h3>
+                <h3>Autor:  <%= book.autor%></h3>
+            </a></li>
+        <% });}%>
+    </ul>
 </div>
 <%include ./template/scripts.ejs%>
 </body>

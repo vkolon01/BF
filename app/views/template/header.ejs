@@ -1,6 +1,6 @@
 <a href="/" title="Index"><img src="/images/logo.jpg"></a>
 <ul id="header">
-    <%if(typeof username !=="undefined"){%><li><a href="#"><%=username%></a></li><%}%>
+    <%if(typeof username !=="undefined"){%><li><a href="<%='/users/'+userid%>"><%=username%></a></li><%}%>
     <li><a href="/createBook" title="CreateBook">Create new book</a></li>
     <!--<li><a href="/signUp" title="SignUp">Sign Up</a></li> -->
     <li><%if(typeof loggedIn !== "undefined" && loggedIn){%>
