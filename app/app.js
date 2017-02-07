@@ -9,15 +9,20 @@ var expressSession = require('express-session');
 var mongoose = require('mongoose');
 var mongoBase = require('connect-mongo')(expressSession);
 mongoose.connect('mongodb://localhost/bookData');
+/*
+All the schemas for the database are stored below
+ */
+//Book schema
 var bookSchema = new mongoose.Schema({
     title: String,
-    autor: String,
+    author: String,
     summary: String,
     cover: String,
     worms: [String], // Holds the user id's who like the book.
-    comments: [{commentAutor: String, body: String, date: Date }]
+    comments: [{commentAuthor: String,authorid: String, body: String, date: Date }]
     //comments: [String] //Holds the comment id's
 });
+//User schema
 var userSchema = new mongoose.Schema({
     firstName: String,
     lastName: String,
@@ -26,12 +31,14 @@ var userSchema = new mongoose.Schema({
     hash: String,
     favBooks: [String]
 });
-var autorSchema = new mongoose.Schema({
+//Author schema
+var authorSchema = new mongoose.Schema({
     full_name: String,
     books: [String]
 });
 var Book = mongoose.model('book',bookSchema);
 var User = mongoose.model('user',userSchema);
+var Author = mongoose.model('author',authorSchema);
 //var Comment = mongoose.model('comment',commentSchema);
 
 var app = express();
@@ -46,6 +53,7 @@ app.set('port',process.env.PORT || 9000);
  */
 app.set('bookData', Book);
 app.set('userData', User);
+app.set('authorData', Author);
 //app.set('commentData', Comment);
 //app.set('session',loginSession());
 app.locals.siteTitle = "Book Face";
@@ -61,7 +69,7 @@ app.use(expressSession({
         mongooseConnection: mongoose.connection,
         autoRemove: 'native'
     }),
-    cookie: {maxAge: 180*60*1000}, //2 hours
+    cookie: {maxAge: 180*60*1000} //2 hours
 }));
 
 app.use(express.static('app/public')); //Allows the use of the public folder

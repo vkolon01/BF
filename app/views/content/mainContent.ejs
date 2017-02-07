@@ -8,7 +8,7 @@
         <a href="<%='books/'+book._id%>" title="goToBook">
             <img src=<% if(book.cover=="null"){%>"/images/null.jpg"<%}%>>
             <h2>Title: <%= book.title %></h2>
-            <h3>Autor:  <%= book.autor%></h3>
+            <h3>Author:  <%= book.author%></h3>
             <p>Summary <br> <%= book.summary%></p>
         </a></li>
     <% }});}%>

@@ -52,11 +52,12 @@ router.get('/users/:userid', function(req,res) {
                     notification: req.session.notification
                 });
             });
-
         });
     });
+router.post('/users/signUp',function(req,res){
 
-router.post('/loginSubmit',function(req,res){
+});
+router.post('/login/loginSubmit',function(req,res){
     var username = req.body.username;
     var password = req.body.password;
     var Users = req.app.get('userData');

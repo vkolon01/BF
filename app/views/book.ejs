@@ -14,7 +14,7 @@
 
         <img src=<% if(book.cover=="null"){%>"/images/null.jpg"<%}%>>
         <h2>Title: <%= book.title %></h2>
-        <h3>Autor:  <%= book.autor%></h3>
+        <h3>Author:  <%= book.author%></h3>
         <p>Summary <br> <%= book.summary%></p><br>
         <form action ="/books/fav" method="post">
             <input type="hidden" name="book_id" value="<%= book._id %>">
@@ -28,7 +28,19 @@
                 <a href="/login">Please log in to leave a comment</a>
             <%}%>
         </form>
+        <section class="container">
         <% include ./content/commentSection.ejs%>
+        <div class="worms">
+            <h1>People who LOVE this book.</h1>
+            <ul>
+                <%if(typeof worms !== 'undefined' && worms.length > 0){ worms.forEach(function(user){ %>
+                <li><h3><a href="/users/<%=user._id%>"><%=user.username%></a></h3></li>
+                <%});}else{%>
+                    <h4>Be the first to like!</h4>
+                <%}%>
+            </ul>
+        </div>
+        </section>
     </div>
 </div>
 <%include ./template/scripts.ejs%>

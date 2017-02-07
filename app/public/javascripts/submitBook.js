@@ -4,7 +4,7 @@ This script receives the request to create a new book with
  If the given parameters meet the criteria then the book is created
  otherwise the script returns error message.
  */
-$(function(){
+/*$(function(){
     $('.submissionForm').submit(function (event) {
         event.preventDefault();
         var errors = Array(2);
@@ -69,3 +69,4 @@ $(function(){
         $('.error_feedback_autor').html(errors[1]);
     }
 });
+*/

@@ -7,25 +7,7 @@ router.use(bodyParser.urlencoded({extended: false}))
 
 
 router.post('/newBook', function(req,res){
-    var BookModel = req.app.get('bookData');
-    var bookData = req.body;
 
-    //console.log('The received json data: '+json(sanForm));
-
-    var book = new BookModel({
-        title: bookData.title,
-        autor: bookData.autor,
-        summary: bookData.summary,
-        cover: 'null',
-        worms: []
-    });
-    book.save(function (err) {
-        if(err) {
-            console.log('The book is lost in space and time')
-        }else{
-            res.redirect('/');
-        }
-    });
 });
 
 router.post('/newUser', function(req,res){

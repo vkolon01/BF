@@ -11,12 +11,12 @@
   </header>
 
   <div id="mainContent">
-
-    <form class="submissionForm">
+    <p id="err"><%=err%></p>
+    <form action="books/newBook" method="post" class="submissionForm"><br>
       Title:<br>
-      <input id="formTitle" type="text"  maxlength=50, autofocus=true name="title"> <p id="err" class="error_feedback_title"></p>
-      Autor:<br>
-      <input id="formAutor" type="text"  maxlength=50 name="autor"> <p id="err" class="error_feedback_autor"></p>
+      <input id="formTitle" type="text"  maxlength=50, autofocus=true name="title"><br>
+      Author:<br>
+      <input id="formAuthor" type="text"  maxlength=20 name="author"><br>
       Summary: (max 300 characters)<br>
       <textarea id="formSummary" type="text" maxlength=300 name="summary" class="summary"></textarea><br><br>
 
