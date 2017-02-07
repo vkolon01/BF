@@ -55,6 +55,76 @@ router.get('/users/:userid', function(req,res) {
         });
     });
 router.post('/users/signUp',function(req,res){
+    //Gathering all the data from the post.
+    var firstName = null;
+    var lastName = null;
+    var username = null;
+    var email = null;
+    var password = null;
+    var passwordC = null;
+    var hashedPassword = null;
+    req.session.err = '';
+
+    //First name
+    if(req.body.firstName.trim().length < 0){
+        req.session.err += 'The first name field appears to be empty';
+    }else if(req.body.firstName.trim().length > 50){
+        req.session.err += 'The first name field appears to over 50 characters long';
+    }else{
+        firstName = req.body.firstName.trim();
+    }
+    //Last name
+    if(req.body.lastName.trim().length < 0){
+        req.session.err += 'The last name field appears to be empty';
+    }else if(req.body.lastName.trim().length > 50){
+        req.session.err += 'The last name field appears to over 50 characters long';
+    }else{
+        lastName = req.body.lastName.trim();
+    }
+    //Username
+    if(req.body.username.trim().length < 0){
+        req.session.err += 'The username field appears to be empty';
+    }else if(req.body.username.trim().length > 50){
+        req.session.err += 'The username field appears to over 50 characters long';
+    }else{
+        //Checking for username availability
+        var Users = req.app.get('userData');
+        Users.find({'username': req.body.username.trim()},function(err,user){
+            if(err) console.log(err);
+            if(user.length < 1){
+                username = req.body.username.trim();
+            }else{
+                req.session.err += 'The username is already taken';
+            }
+        });
+    }
+    //Email
+    if(req.body.email.trim().length < 0){
+        req.session.err += 'The email field appears to be empty';
+    }else{
+        //Checking for email availability
+        var Users = req.app.get('userData');
+        Users.find({'email': req.body.email.trim()},function(err,user){
+            if(err) console.log(err);
+            if(user.length < 1){
+                email = req.body.email.trim();
+            }else{
+                req.session.err = 'Provided email is already registered';
+            }
+        });
+    }
+    //Password
+    if(password === passwordC){
+        crypt(password).hash(function (err,hash){
+            if(err) throw console.log('Hashing has failed' + err);
+            hashedPassword = hash;
+        })
+    }else{
+        req.session.err += 'The confirmation password does not match';
+    }
+
+    //If no errors, submit the account to the mongodb.
+    //Beware of async nature.
 
 });
 router.post('/login/loginSubmit',function(req,res){

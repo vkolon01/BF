@@ -6,10 +6,6 @@ router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({extended: false}))
 
 
-router.post('/newBook', function(req,res){
-
-});
-
 router.post('/newUser', function(req,res){
     var UserModel = req.app.get('userData');
     var userData = req.body;

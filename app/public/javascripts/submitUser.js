@@ -68,7 +68,7 @@ $(function(){
         var errMessage = "";
 
         if (validatedInput.length > 50) {
-            errMessage += field + " field cannot be over 20 letters long.\n";
+            errMessage += field + " field cannot be over 50 letters long.\n";
             badInput = true;
         }
         if (validatedInput.length < 1) {
