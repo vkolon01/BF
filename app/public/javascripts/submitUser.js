@@ -4,7 +4,7 @@
  If the given parameters meet the criteria then the acount is created
  otherwise the script returns error message.
  */
-$(function(){
+/*$(function(){
     $('.createAccount').submit(function (event) {
 
         event.preventDefault();
@@ -132,3 +132,4 @@ $(function(){
     }
 
 });
+*/

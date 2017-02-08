@@ -10,19 +10,24 @@
         <% include ./template/header.ejs%>
     </header>
     <div id="mainContent">
-        <form class="createAccount">
+        <%if(err.constructor === Array){
+            err.forEach(function(error){%>
+                <p id="err"><%=error%></p>
+            <%})
+        }%>
+        <form class="createAccount" action="users/signUp" method="post">
             First name:<br>
-            <input id="formFirstName" type="text" maxlength=50, autofocus=true name="firstName"> <p id="err" class="error_feedback_firstName"></p>
+            <input id="formFirstName" type="text" maxlength=50, autofocus=true name="firstName"><br>
             Last name:<br>
-            <input id="formLastName" type="text" maxlength=50, name="lastName"> <p id="err" class="error_feedback_lastName"></p>
+            <input id="formLastName" type="text" maxlength=50, name="lastName"><br>
             Username:<br>
-            <input id="formUsername" type="text"  name="username"> <p id="err" class="error_feedback_username"></p>
+            <input id="formUsername" type="text"  name="username"><br>
             Email address:<br>
-            <input id="formEmail" type="email" name="emailAddress"><br> <p id="err" class="error_feedback_email"></p>
+            <input id="formEmail" type="email" name="email"><br>
             Password:<br>
-            <input id="formPassword" type="password" name="password"><br> <p id="err" class="error_feedback_password"></p>
+            <input id="formPassword" type="password" name="password"><br>
             Confirm password:<br>
-            <input id="formPasswordConfirm" type="password" name="confirmpassword"><br><br>
+            <input id="formPasswordConfirm" type="password" name="passwordC"><br><br>
 
             <button type="submit"> submit</button> <br><br>
         </form>

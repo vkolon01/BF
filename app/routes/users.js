@@ -4,11 +4,18 @@
 var express = require('express');
 var router = express.Router();
 var crypt = require('password-hash-and-salt'); //https://www.npmjs.com/package/password-hash-and-salt
-
+var async = require('async');
 router.get('/signUp',function(req,res){
+    var err;
+    if(req.session.err === null){
+        err = '';
+    }else{
+        err = req.session.err.split('\n')
+    }
     res.render('signUp',{
         pageTitle: 'Sign Up',
-        pageID: 'signUp'
+        pageID: 'signUp',
+        err: err
     });
     req.session.err = null;
 });
@@ -54,78 +61,98 @@ router.get('/users/:userid', function(req,res) {
             });
         });
     });
-router.post('/users/signUp',function(req,res){
+router.post('/users/signUp',function(req,res, next){
     //Gathering all the data from the post.
     var firstName = null;
     var lastName = null;
     var username = null;
     var email = null;
-    var password = null;
-    var passwordC = null;
     var hashedPassword = null;
     req.session.err = '';
 
     //First name
-    if(req.body.firstName.trim().length < 0){
-        req.session.err += 'The first name field appears to be empty';
+    if(!req.body.firstName.length){
+        req.session.err += 'The first name field appears to be empty.\n';
     }else if(req.body.firstName.trim().length > 50){
-        req.session.err += 'The first name field appears to over 50 characters long';
+        req.session.err += 'The first name field appears to over 50 characters long.\n';
     }else{
         firstName = req.body.firstName.trim();
     }
     //Last name
-    if(req.body.lastName.trim().length < 0){
-        req.session.err += 'The last name field appears to be empty';
+    if(!req.body.lastName.length){
+        req.session.err += 'The last name field appears to be empty.\n';
     }else if(req.body.lastName.trim().length > 50){
-        req.session.err += 'The last name field appears to over 50 characters long';
+        req.session.err += 'The last name field appears to over 50 characters long.\n';
     }else{
         lastName = req.body.lastName.trim();
     }
-    //Username
-    if(req.body.username.trim().length < 0){
-        req.session.err += 'The username field appears to be empty';
-    }else if(req.body.username.trim().length > 50){
-        req.session.err += 'The username field appears to over 50 characters long';
-    }else{
-        //Checking for username availability
-        var Users = req.app.get('userData');
-        Users.find({'username': req.body.username.trim()},function(err,user){
-            if(err) console.log(err);
-            if(user.length < 1){
-                username = req.body.username.trim();
-            }else{
-                req.session.err += 'The username is already taken';
-            }
-        });
-    }
-    //Email
-    if(req.body.email.trim().length < 0){
-        req.session.err += 'The email field appears to be empty';
-    }else{
-        //Checking for email availability
-        var Users = req.app.get('userData');
-        Users.find({'email': req.body.email.trim()},function(err,user){
-            if(err) console.log(err);
-            if(user.length < 1){
-                email = req.body.email.trim();
-            }else{
-                req.session.err = 'Provided email is already registered';
-            }
-        });
-    }
     //Password
-    if(password === passwordC){
-        crypt(password).hash(function (err,hash){
-            if(err) throw console.log('Hashing has failed' + err);
-            hashedPassword = hash;
-        })
+    if(!req.body.password.length || !req.body.passwordC.length) {
+        req.session.err += 'The password field appears to be empty.\n';
     }else{
-        req.session.err += 'The confirmation password does not match';
+        if(req.body.password.length > 7){
+            if(req.body.password === req.body.passwordC){
+                crypt(req.body.password).hash(function (err,hash){
+                    if(err) throw console.log('Hashing has failed' + err);
+                    hashedPassword = hash;
+                })
+            }else{
+                req.session.err += 'The confirmation password does not match.\n';
+            }
+        }else{
+            req.session.err += 'The password must be at least 8 characters long.\n';
+        }
     }
+    async.parallel([
+            //Check username input
+            function (callback){
+                if (!req.body.username.length) {
+                    req.session.err += 'The username field appears to be empty.\n';
+                    callback();
+                } else if (req.body.username.trim().length > 50) {
+                    req.session.err += 'The username field appears to over 50 characters long.\n';
+                    callback();
+                } else {
+                    //Checking for username availability
+                    var Users = req.app.get('userData');
+                    Users.find({'username': req.body.username.trim()}, function (err, user) {
+                        if (err) return callback(err);
+                        if (user.length) {
+                            console.log('username exist');
+                            req.session.err += 'The username is already taken.\n';
+                        } else {
+                            username = req.body.username.trim();
+                        }
+                        callback();
+                    });
+                }
 
-    //If no errors, submit the account to the mongodb.
-    //Beware of async nature.
 
+            },
+            //Check email input
+            function(callback){
+                if(!req.body.email.length){
+                    req.session.err += 'The email field appears to be empty.\n';
+                    callback();
+                }else{
+                    //Checking for email availability
+                    var Users = req.app.get('userData');
+                    Users.find({'email': req.body.email.trim()},function(err,user){
+                        if(err) return callback(err);
+                        if(user.length){
+                            console.log('email exist');
+                            req.session.err += 'Provided email is already registered.\n';
+                        }else{
+                            email = req.body.email.trim();
+                        }
+                        callback();
+                    });
+                }
+            }],
+        function(err){
+            if(err) return next(err);
+            res.redirect('/signUp');
+        });
 });
 router.post('/login/loginSubmit',function(req,res){
     var username = req.body.username;
@@ -143,13 +170,13 @@ router.post('/login/loginSubmit',function(req,res){
                     res.redirect('/');
                 }else{
                     req.session.loggedIn = false;
-                    req.session.err = "The username and/or password is incorrect";
+                    req.session.err += "The username and/or password is incorrect";
                     res.redirect('/login');
                 }
             });
             }else{
                 req.session.loggedIn = false;
-                req.session.err = "The username and/or password is incorrect";
+                req.session.err += "The username and/or password is incorrect";
                 res.redirect('/login');
             }
         });
