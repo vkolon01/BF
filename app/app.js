@@ -9,6 +9,7 @@ var expressSession = require('express-session');
 var mongoose = require('mongoose');
 var mongoBase = require('connect-mongo')(expressSession);
 mongoose.connect('mongodb://localhost/bookData');
+var port = 4000;
 /*
 All the schemas for the database are stored below
  */
@@ -29,7 +30,8 @@ var userSchema = new mongoose.Schema({
     username: String,
     email: String,
     hash: String,
-    favBooks: [String]
+    favBooks: [String],
+    verified: Boolean
 });
 //Author schema
 var authorSchema = new mongoose.Schema({
@@ -46,7 +48,7 @@ var app = express();
 // view engine setup
 app.set('view engine', 'ejs');
 app.set('views','app/views');
-app.set('port',process.env.PORT || 9000);
+app.set('port',process.env.PORT || port);
 
 /**
  * Giving the app access to the following data.
@@ -54,8 +56,7 @@ app.set('port',process.env.PORT || 9000);
 app.set('bookData', Book);
 app.set('userData', User);
 app.set('authorData', Author);
-//app.set('commentData', Comment);
-//app.set('session',loginSession());
+app.set('port',port);
 app.locals.siteTitle = "Book Face";
 
 
@@ -73,11 +74,6 @@ app.use(expressSession({
 }));
 
 app.use(express.static('app/public')); //Allows the use of the public folder
-/*app.use(function(req,res,next){
-    res.locals.login = req.isAuthenticated();
-    res.locals.session = req.session;
-    next();
-});*/
 app.use(require('./routes/books'));
 app.use(require('./routes/api'));
 app.use(require('./routes/users'));

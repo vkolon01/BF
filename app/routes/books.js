@@ -134,7 +134,6 @@ router.post('/books/newBook',function(req,res){
     if(author.length > 50){req.session.err += 'Author name field cannot be over 20 characters\n'}
     if(summary.length > 300){req.session.err += 'Summary field cannot be over 300 characters\n'}
 
-    console.log(title+author);
     if(req.session.err == ""){
         var book = new BookModel({
             title:req.body.title.trim(),

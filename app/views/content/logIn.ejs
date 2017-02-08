@@ -1,3 +1,6 @@
+<%if(typeof err!=='undefined'){%>
+<p id="err"><%=err%></p>
+<%}%>
 <form action="login/loginSubmit" method="post" class="logIn">
     Username:<br>
     <input id="formUsername" type="text" autofocus=true name="username"><br>
@@ -5,8 +8,5 @@
     <input id="formPassword" type="password"  name="password"><br><br>
 
     <button type="loginSubmit"> submit</button>
-    <%if(typeof err !=="undefined"){%>
-        <p><%=err%></p>
-    <%}%>
 </form>
 <p>Don't have an account? </p><a href="/signUp">press here to register</a>
