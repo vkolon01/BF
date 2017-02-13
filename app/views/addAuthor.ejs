@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="eng">
+<head>
+    <% include ./template/head.ejs %>
+</head>
+<body>
+
+<div id="wrapper">
+    <header>
+        <% include ./template/header.ejs%>
+    </header>
+    <div class="mainContent">
+        <img src=<% if(book.cover=="null"){%>"/images/null.jpg"<%}%>>
+        <h2>Title: <%= book.title %></h2>
+        <h3>Please enter the name of the author</h3>
+        <div id="add_author">
+            <p id="err"><%=err%></p>
+            <form action="/book/addAuthor" method="post" class="submissionForm"><br>
+                Author:<br>
+                <input id="formAuthor" type="text" name="author"><br>
+                <input type="hidden" value="<%=book._id%>" name="book_id">
+                <button type="submit"> submit</button>
+            </form>
+    </div>
+</div>
+</body>
+</html>

@@ -2,14 +2,15 @@
     Hello there citizen.
 </h1>
 <ul id="browse">
-    <%if(typeof featureBooks !== 'undefined'){ featureBooks.forEach(function(book){ %>
+    <%if(typeof featureBooks !== 'undefined'){
+    for(var i = 0; i < featureBooks.length; i++){ %>
     <li>
-        <%if(typeof book !=='undefined'){%>
-        <a href="<%='books/'+book._id%>" title="goToBook">
-            <img src=<% if(book.cover=="null"){%>"/images/null.jpg"<%}%>>
-            <h2>Title: <%= book.title %></h2>
-            <h3>Author:  <%= book.author%></h3>
-            <p>Summary <br> <%= book.summary%></p>
+        <%if(featureBooks[i]){%>
+        <a href="<%='books/'+featureBooks[i]._id%>" title="goToBook">
+            <img src=<% if(featureBooks[i].cover=="null"){%>"/images/null.jpg"<%}%>>
+            <h2>Title: <%= featureBooks[i].title %></h2>
+            <h3>Author:  <%if(authors[i]){%><%=authors[i]%><%}else{%>Author Not Specified<%}%></h3>
+            <p>Summary <br> <%= featureBooks[i].summary%></p>
         </a></li>
-    <% }});}%>
+    <% }}}%>
 </ul>

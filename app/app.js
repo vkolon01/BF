@@ -9,14 +9,14 @@ var expressSession = require('express-session');
 var mongoose = require('mongoose');
 var mongoBase = require('connect-mongo')(expressSession);
 mongoose.connect('mongodb://localhost/bookData');
-var port = 4000;
+var port = 3000;
 /*
 All the schemas for the database are stored below
  */
 //Book schema
 var bookSchema = new mongoose.Schema({
     title: String,
-    author: String,
+    author_id: String,
     summary: String,
     cover: String,
     worms: [String], // Holds the user id's who like the book.
@@ -35,13 +35,14 @@ var userSchema = new mongoose.Schema({
 });
 //Author schema
 var authorSchema = new mongoose.Schema({
-    full_name: String,
+    firstName: String,
+    middleName: String,
+    lastName: String,
     books: [String]
 });
 var Book = mongoose.model('book',bookSchema);
 var User = mongoose.model('user',userSchema);
 var Author = mongoose.model('author',authorSchema);
-//var Comment = mongoose.model('comment',commentSchema);
 
 var app = express();
 

@@ -52,12 +52,10 @@ router.get('/login', function(req,res){
 });
 
 router.get('/users/:userid', function(req,res) {
-    req.app.get('userData').findById(req.params.userid,
-        function (err, user) {
+    req.app.get('userData').findById(req.params.userid,function (err, user) {
         if (err)console.log(err);
-            req.app.get('bookData').find({
-                 "_id": { $in: user.favBooks}
-            },function(err,favBooksList){
+        req.app.get('bookData').find({"_id": { $in: user.favBooks}},
+            function(err,favBooksList){
                 res.render('user', {
                     pageTitle: "User's page",
                     user: user,
@@ -68,8 +66,8 @@ router.get('/users/:userid', function(req,res) {
                     notification: req.session.notification
                 });
             });
-        });
     });
+});
 router.post('/users/signUp',function(req,res, next){
     //Gathering all the data from the post.
     var firstName = null;

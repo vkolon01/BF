@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="eng">
+<head>
+    <% include ./template/head.ejs %>
+</head>
+<body>
+
+<div id="wrapper">
+    <header>
+        <% include ./template/header.ejs%>
+    </header>
+    <div id="mainContent">
+        <h2>Full Name: <%=author.firstName + " " + author.middleName + " " + author.lastName%></h2>
+
+        <p> <%= author.firstName %>'s published books: </p>
+    </div>
+    <ul id="listBrowse">
+        <%if(book_list){ book_list.forEach(function(book){ %>
+
+        <li><a href="<%='/books/'+book._id%>" title="goToBook">
+                <img src=<% if(book.cover=="null"){%>"/images/null.jpg"<%}%>>
+                <h3>Title: <%= book.title %></h3>
+            </a></li>
+        <% });}%>
+    </ul>
+</div>
+<%include ./template/scripts.ejs%>
+</body>
+</html>
