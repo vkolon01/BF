@@ -9,7 +9,7 @@
         <a href="<%='books/'+featureBooks[i]._id%>" title="goToBook">
             <img src=<% if(featureBooks[i].cover=="null"){%>"/images/null.jpg"<%}%>>
             <h2>Title: <%= featureBooks[i].title %></h2>
-            <h3>Author:  <%if(authors[i]){%><%=authors[i]%><%}else{%>Author Not Specified<%}%></h3>
+            <h3>Author:  <%if(bookAuthor[i]){%><%=bookAuthor[i]%><%}else{%>Author Not Specified<%}%></h3>
             <p>Summary <br> <%= featureBooks[i].summary%></p>
         </a></li>
     <% }}}%>

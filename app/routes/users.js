@@ -7,6 +7,9 @@ var crypt = require('password-hash-and-salt'); //https://www.npmjs.com/package/p
 var async = require('async');
 var nodemailer = require('nodemailer');
 
+/*
+Creates the page for a register page.
+ */
 router.get('/signUp',function(req,res){
     var err;
     if(!req.session.err){
@@ -21,6 +24,14 @@ router.get('/signUp',function(req,res){
     });
     req.session.err = null;
 });
+
+/*
+If anyone visits the current page with the user's id, the user will be set as verified.
+The link to this page is sent to the user's email address.
+
+In theory the user does not know his id number before actually logging in on the site therefore
+shouldn't be able to just go on that address without having the link.
+ */
 router.get('/signUp/verify/:userid',function(req,res){
     req.app.get('userData').findByIdAndUpdate(req.params.userid,
         { $set: {
@@ -31,6 +42,10 @@ router.get('/signUp/verify/:userid',function(req,res){
             res.redirect('/');
         })
 });
+
+/*
+Simply destroys the user's session.
+ */
 router.get('/logOut',function(req,res){
    req.session.destroy();
     res.render('logInPage',{
@@ -38,6 +53,10 @@ router.get('/logOut',function(req,res){
         pageID: 'logOut'
     });
 });
+
+/*
+Creates the route for login page.
+ */
 router.get('/login', function(req,res){
    res.render('logInPage',{
        pageTitle: 'Log In',
@@ -51,6 +70,10 @@ router.get('/login', function(req,res){
     req.session.err = null;
 });
 
+/*
+ Creates the page of the user by using the user's id number.
+ The likedBooks list is created by finding all the books by id. The id's are taken from the user's favourite books list.
+ */
 router.get('/users/:userid', function(req,res) {
     req.app.get('userData').findById(req.params.userid,function (err, user) {
         if (err)console.log(err);
@@ -68,6 +91,12 @@ router.get('/users/:userid', function(req,res) {
             });
     });
 });
+
+/*
+Receives the post from the signUp page.
+Checks the user input data. When all the data has being checked proceeds to create
+the new user account.
+ */
 router.post('/users/signUp',function(req,res, next){
     //Gathering all the data from the post.
     var firstName = null;
@@ -94,8 +123,6 @@ router.post('/users/signUp',function(req,res, next){
     }else{
         lastName = req.body.lastName.trim();
     }
-
-
     async.parallel([
         //Check the password input
         function(callback){
@@ -204,6 +231,11 @@ router.post('/users/signUp',function(req,res, next){
 
         });
 });
+
+/*
+Receives post data from the login page. If the given information matches the user in the database then
+gives the user the permission to use that user account. Otherwise refreshes the page with the error message.
+ */
 router.post('/login/loginSubmit',function(req,res){
     var username = req.body.username;
     var password = req.body.password;

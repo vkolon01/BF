@@ -7,6 +7,12 @@ var bodyParser = require('body-parser');
 router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({ extended: false }));
 
+
+/*
+The router for the index page of the website.
+The index page contains a fixed number of random books that are displayed on the main page.
+--> Sometimes the same book can show up twice on the same page. <--
+ */
 router.get('/', function(req,res){
     var books = req.app.get('bookData'),
         dataFile = [],
@@ -24,20 +30,16 @@ router.get('/', function(req,res){
                 dataFile.forEach(function(book){
                     var authorName = "";
                     if(book.author_id) {
-                        req.app.get('authorData').findById(book.author_id, function (err, author) {
+                        req.app.get('authorData').findById(book.author_id, function (err, bookAuthor) {
                             if (err)return err;
-                            if (author.firstName)authorName = author.firstName;
-                            if (author.middleName)authorName += " " + author.middleName;
-                            if (author.lastName)authorName += " " + author.lastName;
-
-                            authors.push(authorName);
+                            if(bookAuthor)authors.push(bookAuthor.firstName + " " + bookAuthor.middleName + " " + bookAuthor.lastName);
                         });
                     }
                 });
                 res.render('index', {
                     pageTitle: 'HOME',
                     featureBooks: dataFile,
-                    authors: authors,
+                    bookAuthor: authors,
                     pageID: 'index',
                     userid: req.session.userid,
                     loggedIn: req.session.loggedIn,
@@ -50,6 +52,9 @@ router.get('/', function(req,res){
     });
 });
 
+/*
+Displays all the books on the database.
+ */
 router.get('/browse', function(req,res){
     var books = req.app.get('bookData')
     books.find(function (err, book){
@@ -67,7 +72,10 @@ router.get('/browse', function(req,res){
     });
 });
 
-
+/*
+Creates the page of the author by using the author's id number.
+The book_list is created by finding all the books by id. The id's are taken from the author's books list.
+ */
 router.get('/authors/:authorid',function(req,res){
     req.app.get('authorData').findById(req.params.authorid,function(err, author) {
         if (err)console.log(err);
@@ -85,24 +93,25 @@ router.get('/authors/:authorid',function(req,res){
             });
     });
 });
+
+/*
+ Creates the page of the book.
+ Very dirty solution to the callback hell.
+ The goal was to display correctly if the current book is already in the user's favourites or not.
+ */
 router.get('/books/:bookid', function(req,res){
     var bookid = req.params.bookid;
 
     req.app.get('bookData').findById(bookid,function(err,book) {
         if (err)console.log(err);
-        var authorName = "";
+        var author;
         if(book.author_id) {
-            req.app.get('authorData').findById(book.author_id, function (err, author) {
+            req.app.get('authorData').findById(book.author_id, function (err, bookAuthor) {
                 if (err)return err;
-                if (author.firstName)authorName = author.firstName;
-                if (author.middleName)authorName += " " + author.middleName;
-                if (author.lastName)authorName += " " + author.lastName;
-                console.log(author.lastName);
+                if(bookAuthor)author = bookAuthor;
             });
         }
-        //Creates the page of the book.
-        //Very dirty solution to the callback hell.
-        // The goal was to display correctly if the current book is already in the user's favourites or not.
+
         req.app.get('userData').find({
             "_id": {$in: book.worms}
         }, function (err, worms) {
@@ -114,7 +123,7 @@ router.get('/books/:bookid', function(req,res){
                             res.render('book', {
                                 pageTitle: book.title,
                                 book: book,
-                                authorName: authorName,
+                                bookAuthor: author,
                                 pageID: 'book',
                                 userid: req.session.userid,
                                 loggedIn: req.session.loggedIn,
@@ -133,7 +142,7 @@ router.get('/books/:bookid', function(req,res){
                             res.render('book', {
                                 pageTitle: book.title,
                                 book: book,
-                                authorName: authorName,
+                                bookAuthor: author,
                                 pageID: 'book',
                                 userid: req.session.userid,
                                 loggedIn: req.session.loggedIn,
@@ -154,7 +163,7 @@ router.get('/books/:bookid', function(req,res){
                     res.render('book', {
                         pageTitle: book.title,
                         book: book,
-                        authorName: authorName,
+                        bookAuthor: author,
                         pageID: 'book',
                         userid: req.session.userid,
                         loggedIn: req.session.loggedIn,
@@ -173,6 +182,9 @@ router.get('/books/:bookid', function(req,res){
     });
 });
 
+/*
+The page is replica of the book page but without the 'fav' function
+ */
 router.get('/books/:bookid/addauthor', function(req,res){
     var bookid = req.params.bookid;
 
@@ -191,6 +203,9 @@ router.get('/books/:bookid/addauthor', function(req,res){
     });
 });
 
+/*
+Creates a page with a form for creating a new book.
+ */
 router.get('/createBook', function(req,res,next){
     res.render('createBook',{
         pageTitle: 'Create book',
@@ -202,10 +217,12 @@ router.get('/createBook', function(req,res,next){
         err:req.session.err
     });
 });
-router.post('/authors/addAuthor',function(req,res){
-    var BookModel = req.app.get('bookData');
 
-});
+/*
+Catches a post request from a newBook form.
+If the user did not provide the name of the author the book will be created normally
+with the first, middle and last names having the value NULL.
+ */
 router.post('/books/newBook',function(req,res){
     var BookModel = req.app.get('bookData');
     var title = req.body.title.trim();
@@ -239,34 +256,29 @@ router.post('/books/newBook',function(req,res){
                 var update = { $push: {"books": book._id}},
                     options = { upsert: true, new: true, setDefaultsOnInsert: true };
 
+
                 if(author.length > 0){
                     author = author.split(' ');
                     if(author.length == 1){
-                        req.app.get('authorData').findOneAndUpdate({ "firstName" : author[0]},update,options,function(err,result){
+                        req.app.get('authorData').findOneAndUpdate({ $and:[ {"firstName": author[0]},{"middleName": ""},{"lastName": ""}]},update,options,function(err,result){
                             if(err) return err;
-                                console.log(result._id);
                                 book.update({"author_id": result._id},function(err){if(err) console.log(err)});
                         }
                         )
                     }else if(author.length == 2){
-                        req.app.get('authorData').findOneAndUpdate({ $and:[ {"firstName": author[0]},{"lastName:": author[1]}]},update,options,function(err,result){
+                        req.app.get('authorData').findOneAndUpdate({ $and:[ {"firstName": author[0]},{"middleName": " "},{"lastName": author[1]}]},update,options,function(err,result){
                             if(err) return err;
-                                console.log(result._id);
                                 book.update({"author_id": result._id},function(err){if(err) console.log(err)});
                         }
                         )
                     }else {
                         req.app.get('authorData').findOneAndUpdate({ $and:[ {"firstName": author[0]},{"middleName": author[1]},{"lastName": author[2]}]},update,options,function(err,result){
                             if(err) return err;
-                                console.log(result);
                                 book.update({"author_id": result._id},function(err){if(err) console.log(err)});
                         }
                         )
                     }
-                }else{
-                    console.log('The book has been created without an author');
                 }
-
             }
         });
         res.redirect('/');
@@ -275,6 +287,11 @@ router.post('/books/newBook',function(req,res){
     }
 
 });
+
+/*
+Gets the comment data and the book's id where the comment was left.
+ The comment author is passed from the session that the user is using.
+ */
 router.post('/books/newComment',function(req,res){
     req.session.err = '';
     var commentData = req.body.comment;
@@ -300,37 +317,37 @@ router.post('/books/newComment',function(req,res){
 
     res.redirect('/books/'+bookid);
 });
+
+/*
+ The post contains code that is the exact replica from the post/newBook.
+ Will need to create functions to avoid duplications.
+ */
 router.post('/book/addAuthor',function(req,res){
 
-    /*
-    The following code is exact replica from the post newBook.
-    Will need to create functions to avoid duplications.
-     */
+
     var author = req.body.author,
         book_id = req.body.book_id;
 
-    console.log(book_id);
-
-    req.app.get('bookData').findByIdAndUpdate(book_id,function(err,book){
-        if(err) return err;
-
-        var update = { $push: {"books": book._id}},
-            options = { upsert: true, new: true, setDefaultsOnInsert: true };
-
-        if(author.length > 0){
+    req.app.get('bookData').findById(book_id,function(err,book){
+        if(err) console.log(err);
+        if(book && author.length > 0){
             author = author.split(' ');
+            var update = { $push: {"books": book._id}},
+                options = { upsert: true, new: true, setDefaultsOnInsert: true };
             if(author.length == 1){
-                req.app.get('authorData').findOneAndUpdate({ "firstName" : author[0]},update,options,function(err,result){
+                req.app.get('authorData').findOneAndUpdate({ $and:[ {"firstName": author[0]},{"middleName": ""},{"lastName": ""}]},update,options,function(err,result){
                         if(err) return err;
                         console.log(result._id);
                         book.update({"author_id": result._id},function(err){if(err) console.log(err)});
+                    res.redirect('/');
                     }
                 )
             }else if(author.length == 2){
-                req.app.get('authorData').findOneAndUpdate({ $and:[ {"firstName": author[0]},{"lastName:": author[1]}]},update,options,function(err,result){
+                req.app.get('authorData').findOneAndUpdate({ $and:[ {"firstName": author[0]},{"middleName": ""},{"lastName": author[1]}]},update,options,function(err,result){
                         if(err) return err;
                         console.log(result._id);
                         book.update({"author_id": result._id},function(err){if(err) console.log(err)});
+                    res.redirect('/');
                     }
                 )
             }else {
@@ -338,25 +355,22 @@ router.post('/book/addAuthor',function(req,res){
                         if(err) return err;
                         console.log(result);
                         book.update({"author_id": result._id},function(err){if(err) console.log(err)});
+                    res.redirect('/');
                     }
                 )
             }
+
         }else{
             req.session.err = "The author name form appears to be empty.";
-            res.redirect('/');
+            res.redirect('/books/' + book_id + '/addAuthor');
         }
     });
-
-
-
-
-
-    res.redirect('/');
 });
 
 
 
 /*
+Worms are referred to users who like the current book.
 Adds the book's id to the user's favourites and also
 adds the user's id to the book's worm list.
  */
