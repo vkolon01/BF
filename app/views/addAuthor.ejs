@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html lang="eng">
 <head>
-    <% include ./template/head.ejs %>
+    <% include template/head.ejs %>
 </head>
 <body>
 
 <div id="wrapper">
     <header>
-        <% include ./template/header.ejs%>
+        <% include template/header.ejs%>
     </header>
     <div class="mainContent">
         <img src=<% if(book.cover=="null"){%>"/images/null.jpg"<%}%>>

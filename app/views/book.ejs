@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html lang="eng">
 <head>
-    <% include ./template/head.ejs %>
+    <% include template/head.ejs %>
 </head>
 <body>
 
 <div id="wrapper">
     <header>
-        <% include ./template/header.ejs%>
+        <% include template/header.ejs%>
     </header>
 
     <div class="mainContent">
@@ -30,7 +30,7 @@
         </form>
 
         <section class="container">
-        <% include ./content/commentSection.ejs%>
+        <% include content/commentSection.ejs%>
         <div class="worms">
             <h1>People who LOVE this book.</h1>
             <ul>
@@ -44,6 +44,6 @@
         </section>
     </div>
 </div>
-<%include ./template/scripts.ejs%>
+<%include template/scripts.ejs%>
 </body>
 </html>

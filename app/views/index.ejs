@@ -1,19 +1,19 @@
 <!DOCTYPE html>
 <html lang="eng">
 <head>
-  <% include ./template/head.ejs %>
+  <% include template/head.ejs %>
 </head>
 <body>
 
 <div id="wrapper">
   <header>
-    <% include ./template/header.ejs%>
+    <% include template/header.ejs%>
   </header>
-  <div><% include ./content/returnHome.ejs  %></div>
+  <div><% include content/returnHome.ejs  %></div>
   <div id="mainContent">
     <% include content/mainContent.ejs %>
   </div>
 </div>
-<%include ./template/scripts.ejs%>
+<%include template/scripts.ejs%>
 </body>
 </html>
