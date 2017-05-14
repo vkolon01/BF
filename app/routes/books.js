@@ -14,41 +14,60 @@ The index page contains a fixed number of random books that are displayed on the
 --> Sometimes the same book can show up twice on the same page. <--
  */
 router.get('/', function(req,res){
+    var max_number_of_featured_books = 4;
     var books = req.app.get('bookData'),
         dataFile = [],
         authors = [],
         count;
     books.find(function (err, book){
         if(err) return console.error(err);
+        if(book.length != 0){
+            //Collecting 3 random books to feature on the page.
 
-        //Collecting 3 random books to feature on the page.
-        var randNum;
-        for(count = 0; count < 4; count++){
-            randNum = Math.floor(Math.random() * book.length);
-            dataFile.push(book[randNum]);
-            if(count == 3){
-                dataFile.forEach(function(book){
-                    var authorName = "";
-                    if(book.author_id) {
-                        req.app.get('authorData').findById(book.author_id, function (err, bookAuthor) {
-                            if (err)return err;
-                            if(bookAuthor)authors.push(bookAuthor.firstName + " " + bookAuthor.middleName + " " + bookAuthor.lastName);
-                        });
-                    }
-                });
-                res.render('index', {
-                    pageTitle: 'HOME',
-                    featureBooks: dataFile,
-                    bookAuthor: authors,
-                    pageID: 'index',
-                    userid: req.session.userid,
-                    loggedIn: req.session.loggedIn,
-                    username: req.session.username,
-                    notification: req.session.notification
-                });
-                req.session.err = '';
+            if(book.length < max_number_of_featured_books){
+                max_number_of_featured_books = book.length;
             }
+            var randNum;
+
+            for(count = 0; count < max_number_of_featured_books; count++){
+                randNum = Math.floor(Math.random() * book.length);
+                dataFile.push(book[randNum]);
+                if(count == max_number_of_featured_books-1){
+                    dataFile.forEach(function(book){
+                        var authorName = "";
+                        if(book.author_id) {
+                            req.app.get('authorData').findById(book.author_id, function (err, bookAuthor) {
+                                if (err)return err;
+                                if(bookAuthor)authors.push(bookAuthor.firstName + " " + bookAuthor.middleName + " " + bookAuthor.lastName);
+                            });
+                        }
+                    });
+                    res.render('index', {
+                        pageTitle: 'HOME',
+                        featureBooks: dataFile,
+                        bookAuthor: authors,
+                        pageID: 'index',
+                        userid: req.session.userid,
+                        loggedIn: req.session.loggedIn,
+                        username: req.session.username,
+                        notification: req.session.notification
+                    });
+                    req.session.err = '';
+                }
+            }
+        }else{
+            res.render('index', {
+                pageTitle: 'HOME',
+                featureBooks: false,
+                bookAuthor: authors,
+                pageID: 'index',
+                userid: req.session.userid,
+                loggedIn: req.session.loggedIn,
+                username: req.session.username,
+                notification: req.session.notification
+            });
         }
+
     });
 });
 
@@ -56,12 +75,15 @@ router.get('/', function(req,res){
 Displays all the books on the database.
  */
 router.get('/browse', function(req,res){
-    var books = req.app.get('bookData')
+    var books = req.app.get('bookData');
+
     books.find(function (err, book){
+        var list = false;
         if(err) return console.error(err);
+        if(book.length > 0) list = book;
                 res.render('browse', {
                     pageTitle: 'HOME',
-                    allBooks: book,
+                    allBooks: list,
                     pageID: 'index',
                     userid: req.session.userid,
                     loggedIn: req.session.loggedIn,
@@ -280,8 +302,9 @@ router.post('/books/newBook',function(req,res){
                     }
                 }
             }
+            res.redirect(book.id);
         });
-        res.redirect('/');
+
     }else{
         res.redirect('/createBook');
     }

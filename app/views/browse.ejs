@@ -15,7 +15,7 @@
             Hello there citizen.
         </h1>
         <ul id="browse">
-            <%if(typeof allBooks !== 'undefined'){
+            <%if(allBooks){
             allBooks.forEach(function(book){ %>
             <li>
                 <%if(book){%>
@@ -25,7 +25,9 @@
                     <p>Summary <br> <%= book.summary%></p>
                 </a></li>
             <% }});
-            }%>
+            }else{%>
+                <p>Click <a href="createBook">here</a> to add the very first book</p>
+            <%}%>
         </ul>
     </div>
 </div>

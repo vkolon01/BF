@@ -2,7 +2,7 @@
     Hello there citizen.
 </h1>
 <ul id="browse">
-    <%if(typeof featureBooks !== 'undefined'){
+    <%if(featureBooks){
     for(var i = 0; i < featureBooks.length; i++){ %>
     <li>
         <%if(featureBooks[i]){%>
@@ -12,5 +12,8 @@
             <h3>Author:  <%if(bookAuthor[i]){%><%=bookAuthor[i]%><%}else{%>Author Not Specified<%}%></h3>
             <p>Summary <br> <%= featureBooks[i].summary%></p>
         </a></li>
-    <% }}}%>
+    <% }}}else{%>
+        <p>Click <a href="createBook">here</a> to add the very first book</p>
+    <%}%>
+
 </ul>
